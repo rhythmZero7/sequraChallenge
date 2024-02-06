@@ -1,24 +1,70 @@
-# README
+# Sequra Backend Coding Challenge
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Author
+Sam Samaniego
+February, 2024
 
-Things you may want to cover:
+## Requirements
+* Ruby v 3.3.0
+* Rails v 7.1.3
+* Postgres v 14.10
 
-* Ruby version
+## Configuration
+### 1. Database
+Currently system-wide Postgres is used, which can be installed (and automatically run) via normal OS package managers
+* MacOS
+```
+brew install postgres@14
+brew services start postgres@14
+```
 
-* System dependencies
+### 2. Rails Setup
+#### 2.1 Install gems
+```bash
+bundle install
+```
+### 2.2 Setup Databases
+```bash
+bundle exec rake db:create
+bundle exec rake db:migrate
+bundle exec rake db:seed
+```
 
-* Configuration
+## Testing
+To run all tests
+```bash
+rspec
+```
 
-* Database creation
+## Running a Developer Server
+```bash
+bundle exec rails server
+```
 
-* Database initialization
+## Description
 
-* How to run the test suite
+## Endpoint
+Exposes the disbursements for a given merchant on a given week.
+If no merchant is provided return for all of them.
 
-* Services (job queues, cache servers, search engines, etc.)
+```
+@path [GET] /merchant/disbursements
 
-* Deployment instructions
+@parameter (body)[integer](id)
+@parameter (body, required)[date](week)
+@response 200 merchant_disbursements (by week)
+@response 400 Invalid parameters
+@response 404 merchant not found
+```
+### Design Decisions
 
-* ...
+## Money
+Given that we are dealing with money, all fields related to currency were declared as `bigint` with `precision: 8` and `scale: 2`. This should be enough for the scope of this project, where we are using a single currency and basic operations only. However, in a real-life scenario it would probably be a good idea to consider using a pre-existing gem such as `money-rails` to handle conversions and more complex operations without losing precision.
+
+### Todo's
+A lot can still be done to improve this code. Especially in the controller.
+Look at code for specifics.
+
+Would have also liked to add a programmed job to run the Worker each Monday.
+
+

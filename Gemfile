@@ -14,12 +14,16 @@ gem "pg", "~> 1.1"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 
+# Needed in order to seed db from provided files
+gem 'csv'
+
 group :development, :test do
   gem 'rubocop', require: false	
   gem 'rubocop-performance', require: false
   gem 'rubocop-rspec', require: false
   gem 'rubocop-rake', require: false
   gem 'rspec-rails', '~> 6.1.0'
+  gem "factory_bot_rails"
 end
 
 group :development do
@@ -29,4 +33,5 @@ end
 
 group :test do
   gem 'pry-byebug'
+  gem 'faker'
 end
