@@ -61,7 +61,7 @@ If no merchant is provided return for all of them.
 @response 400 Invalid parameters
 @response 404 merchant not found
 ```
-### Design Decisions
+# Design Decisions
 
 ## Money
 Given that we are dealing with money, all fields related to currency were declared as `bigint` with `precision: 8` and `scale: 2`. This should be enough for the scope of this project, where we are using a single currency and basic operations only. However, in a real-life scenario it would probably be a good idea to consider using a pre-existing gem such as `money-rails` to handle conversions and more complex operations without losing precision.
@@ -72,8 +72,7 @@ Additionally, to achieve perfect precision, all operations involving currency we
 I did not optimize the seeding of the DB because I preferred to invest more time in the actual solution than the loading of the data.
 
 ### Todo's
-A lot can still be done to improve this code. Especially in the controller.
-Look at code for specifics.
+A lot can still be done to improve this code.
 
 Would have also liked to add a programmed job to run the Worker each Monday.
 

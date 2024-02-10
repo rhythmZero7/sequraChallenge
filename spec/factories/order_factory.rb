@@ -4,6 +4,6 @@
 FactoryBot.define do
   factory :order do
     merchant { FactoryBot.build(:merchant) }
-    amount { Faker::Commerce.price(range: 0..10_000.0) }
+    amount { rand(1.0..25_000.00) }
   end
 end

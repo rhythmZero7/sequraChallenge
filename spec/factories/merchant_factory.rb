@@ -9,11 +9,11 @@ FactoryBot.define do
     end
 
     trait :daily do
-      disbursement_frequency { :daily }
+      disbursement_frequency { :DAILY }
     end
 
     trait :weekly do
-      disbursement_frequency { :weekly }
+      disbursement_frequency { :WEEKLY }
     end
   end
 end
