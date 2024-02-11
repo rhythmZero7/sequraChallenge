@@ -10,7 +10,7 @@ class Disbursement < ApplicationRecord
   validates :amount, numericality: true, comparison: { greater_than_or_equal_to: 0 }
   validates :fee, numericality: true, comparison: { greater_than_or_equal_to: 0 }
 
-  before_create :set_reference, :set_amount, :set_fee
+  before_create :set_reference
 
   scope :within_last_month, lambda { |date|
     where('created_at BETWEEN ? AND ?', date.beginning_of_month, date)
@@ -32,13 +32,5 @@ class Disbursement < ApplicationRecord
 
   def set_reference
     self.reference ||= SecureRandom.alphanumeric(16)
-  end
-
-  def set_amount
-    self.amount ||= 0.00
-  end
-
-  def set_fee
-    self.fee ||= 0.00
   end
 end
