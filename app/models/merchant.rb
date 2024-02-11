@@ -3,6 +3,7 @@
 # This is the merchant class.
 class Merchant < ApplicationRecord
   has_many :orders, dependent: :destroy
+  has_many :disbursements
 
   enum :disbursement_frequency, %i[DAILY WEEKLY]
 
