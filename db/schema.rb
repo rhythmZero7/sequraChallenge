@@ -31,7 +31,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_11_164840) do
     t.string "reference", null: false
     t.date "live_on"
     t.integer "disbursement_frequency", default: 0
-    t.decimal "minimum_monthly_fee", precision: 8, scale: 2
+    t.decimal "minimum_monthly_fee", precision: 8, scale: 2, default: "0.0", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["reference"], name: "unique_references", unique: true

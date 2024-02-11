@@ -83,4 +83,40 @@ RSpec.describe Merchant do
       expect(merchant.disbursement_day?(disbursement_date)).to be(false)
     end
   end
+
+  ######### ORDERS_TO_BE_DISBURSED ###########
+  describe '.orders_to_be_disbursed' do
+    let(:date) { Date.today }
+
+    it 'does not return already disbursed orders' do
+      merchant = create(:merchant, :daily)
+      order = create(:order, merchant: merchant, created_at: date - 6.hours,
+                             disbursed_at: date - 7.hours)
+      expect(merchant.orders_to_be_disbursed(date).include?(order)).to be(false)
+    end
+
+    it 'returns orders created same day for daily merchants' do
+      merchant = create(:merchant, :daily)
+      order = create(:order, merchant: merchant, created_at: date - 6.hours)
+      expect(merchant.orders_to_be_disbursed(date).include?(order)).to be(true)
+    end
+
+    it 'does not return orders created other days for daily merchants' do
+      merchant = create(:merchant, :daily)
+      order = create(:order, merchant: merchant, created_at: date - 2.days)
+      expect(merchant.orders_to_be_disbursed(date).include?(order)).to be(false)
+    end
+
+    it 'returns orders created same week for weekly merchants' do
+      merchant = create(:merchant, :weekly)
+      order = create(:order, merchant: merchant, created_at: date - 2.days)
+      expect(merchant.orders_to_be_disbursed(date).include?(order)).to be(true)
+    end
+
+    it 'does not return orders created other weeks for weekly merchants' do
+      merchant = create(:merchant, :weekly)
+      order = create(:order, merchant: merchant, created_at: date - 10.days)
+      expect(merchant.orders_to_be_disbursed(date).include?(order)).to be(false)
+    end
+  end
 end

@@ -12,6 +12,22 @@ class Disbursement < ApplicationRecord
 
   before_create :set_reference, :set_amount, :set_fee
 
+  scope :within_last_month, lambda { |date|
+    where('created_at BETWEEN ? AND ?', date.beginning_of_month, date)
+  }
+
+  def self.first_of_month?(date = Time.now)
+    within_last_month(date).empty?
+  end
+
+  def extra_fee(date = Time.now)
+    if merchant.complies_with_minimum_monthly_fee?(date)
+      BigDecimal('0.00')
+    else
+      merchant.minimum_monthly_fee - merchant.total_monthly_fee_to_date(date)
+    end
+  end
+
   private
 
   def set_reference
