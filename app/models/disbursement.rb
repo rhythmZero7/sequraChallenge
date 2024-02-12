@@ -17,6 +17,10 @@ class Disbursement < ApplicationRecord
     where('created_at BETWEEN ? AND ?', date.beginning_of_month, date)
   }
 
+  scope :created_between, lambda { |start_date, end_date|
+    where('created_at BETWEEN ? AND ?', start_date, end_date)
+  }
+
   def self.first_of_month?(date = Time.now)
     within_last_month(date).empty?
   end
