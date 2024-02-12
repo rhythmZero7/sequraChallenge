@@ -54,6 +54,10 @@ Given that we are dealing with money, all fields related to currency were declar
 ## Architecture
 I decided to spend most of my time designing small reusable methods, all of which have been thoroughly tested. These are the building blocks for a strong foundation which can later be easily scaled.
 
+## Service Objects
+I decided to use Service Objects in order for multiple database updates to be wrapped in a transaction block, and therefore be safer.
+This is the case for the `DisbursementCalculator` and `OrderDesbursement` services.
+
 ## Seeds
 I did not optimize the seeding of the DB because I preferred to invest more time in the actual solution than the loading of the data.
 
