@@ -56,7 +56,7 @@ I decided to spend most of my time designing small reusable methods, all of whic
 
 ## Service Objects
 I decided to use Service Objects in order for multiple database updates to be wrapped in a transaction block, and therefore be safer.
-This is the case for the `DisbursementCalculator` and `OrderDesbursement` services.
+This is the case for the `DisbursementCalculator` service.
 
 ## Seeds
 I did not optimize the seeding of the DB because I preferred to invest more time in the actual solution than the loading of the data.
@@ -64,6 +64,6 @@ I did not optimize the seeding of the DB because I preferred to invest more time
 ### Todo's
 A lot can still be done to improve this code.
 
-For example, my next step would've been adding a worker to start the disbursements calculation for all merchants, by 8:00 UTC daily.
+For example, my next step if given more time would have been adding a worker to start the disbursements calculation for all merchants, by 8:00 UTC daily. However, all the blocks are in place for this development to be achieved in a few lines.
 
 

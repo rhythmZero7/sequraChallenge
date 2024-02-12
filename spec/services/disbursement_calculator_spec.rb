@@ -14,7 +14,6 @@ RSpec.describe DisbursementCalculator do
 
     it "creates a disbursement for each merchant who's on a disbursement date" do
       described_class.call(disbursement_date)
-      binding.pry
       expect(merchant.disbursements.size).to eq(1)
     end
 
@@ -34,6 +33,11 @@ RSpec.describe DisbursementCalculator do
       expected_fee = merchant.total_monthly_fee_to_date(disbursement_date)
       described_class.call(disbursement_date)
       expect(merchant.disbursements.first.fee_in_cents).to eq(expected_fee)
+    end
+
+    it 'updates orders to be disbursed so they are disbursed just once' do
+      described_class.call(disbursement_date)
+      expect(merchant.orders_to_be_disbursed.empty?).to be(true)
     end
   end
 end

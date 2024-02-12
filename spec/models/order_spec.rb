@@ -65,4 +65,20 @@ RSpec.describe Order do
       expect(large_order.fee_in_cents).to eq(expected_amount)
     end
   end
+
+  ####### DISBURSE #########
+  describe '.disburse' do
+    let(:disbursement) { create(:disbursement) }
+    let(:order) { create(:order) }
+
+    it 'updates disbursed_at for provided orders' do
+      described_class.disburse(disbursement.reference, [order])
+      expect(order.disbursed_at).to eq(disbursement.created_at)
+    end
+
+    it 'associates selected orders to corresponding disbursement' do
+      described_class.disburse(disbursement.reference, [order])
+      expect(disbursement.orders.include?(order)).to be(true)
+    end
+  end
 end

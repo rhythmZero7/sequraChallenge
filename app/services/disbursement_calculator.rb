@@ -11,7 +11,6 @@ class DisbursementCalculator < ApplicationService
   end
 
   def call
-    disbursements = []
     Merchant.all.each do |merchant|
       next unless merchant.disbursement_day?(@disbursement_date)
 
@@ -20,9 +19,8 @@ class DisbursementCalculator < ApplicationService
         amount_in_cents = orders.sum(&:amount_in_cents)
         fee_in_cents = merchant.total_monthly_fee_to_date(@disbursement_date)
         d = merchant.disbursements.create!(amount_in_cents: amount_in_cents, fee_in_cents: fee_in_cents, created_at: @disbursement_date)
-        disbursements << d
+        Order.disburse(d.reference, orders)
       end
-      # Orders.update(disbursements)
     end
   end
 end

@@ -12,6 +12,13 @@ class Order < ApplicationRecord
     where('created_at BETWEEN ? AND ?', start_date, end_date)
   }
 
+  def self.disburse(reference, orders_to_disburse)
+    disbursement = Disbursement.find_by(reference: reference)
+    orders_to_disburse.each do |o|
+      o.update(disbursed_at: disbursement.created_at, disbursement_id: disbursement.id)
+    end
+  end
+
   def merchant_reference
     merchant.reference
   end
