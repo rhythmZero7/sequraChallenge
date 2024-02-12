@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :disbursement do
-    merchant { FactoryBot.build(:merchant) }
-    amount { 0.00 }
-    fee { 0.00 }
+    merchant
+    amount_in_cents { 0 }
+    fee_in_cents { 0 }
   end
 end

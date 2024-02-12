@@ -4,7 +4,7 @@
 class Order < ApplicationRecord
   belongs_to :merchant
 
-  validates :amount, presence: true, numericality: true, comparison: { greater_than_or_equal_to: 0 }
+  validates :amount_in_cents, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   scope :not_disbursed, -> { where(disbursed_at: nil) }
 
@@ -16,21 +16,25 @@ class Order < ApplicationRecord
     merchant.reference
   end
 
+  def amount
+    amount_in_cents / 100
+  end
+
+  def fee
+    fee_in_cents / 100
+  end
+
   # The disbursed amount has the following fee per order:
   # 1% fee for amounts smaller than 50 €
   # 0.95% for amounts between 50€ - 300€
   # 0.85% for amounts over 300€
-  def fee
-    if amount < BigDecimal('50.00')
-      amount * BigDecimal('0.01')
-    elsif amount < BigDecimal('300.00')
-      amount * BigDecimal('0.0095')
+  def fee_in_cents
+    if amount_in_cents < 5000
+      (amount_in_cents * 0.01).round
+    elsif amount_in_cents < 30_000
+      (amount_in_cents * 0.0095).round
     else
-      amount * BigDecimal('0.0085')
+      (amount_in_cents * 0.0085).round
     end
-  end
-
-  def disbursed?
-    disbursed_at.present?
   end
 end

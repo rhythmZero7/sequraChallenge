@@ -10,18 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_11_164840) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_11_162628) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
   create_table "disbursements", force: :cascade do |t|
     t.string "reference", null: false
+    t.integer "amount_in_cents", null: false
+    t.integer "fee_in_cents", null: false
     t.bigint "merchant_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.decimal "amount", precision: 10, scale: 2
-    t.decimal "fee", precision: 10, scale: 2
     t.index ["merchant_id"], name: "index_disbursements_on_merchant_id"
     t.index ["reference"], name: "unique_disbursements", unique: true
   end
@@ -31,14 +31,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_11_164840) do
     t.string "reference", null: false
     t.date "live_on"
     t.integer "disbursement_frequency", default: 0
-    t.decimal "minimum_monthly_fee", precision: 8, scale: 2, default: "0.0", null: false
+    t.integer "minimum_monthly_fee_in_cents", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["reference"], name: "unique_references", unique: true
   end
 
   create_table "orders", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.decimal "amount", precision: 8, scale: 2, null: false
+    t.integer "amount_in_cents", null: false
     t.datetime "disbursed_at"
     t.bigint "merchant_id"
     t.datetime "created_at", null: false

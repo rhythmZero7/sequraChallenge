@@ -16,18 +16,13 @@ class DisbursementCalculator < ApplicationService
       next unless merchant.disbursement_day?(@disbursement_date)
 
       ActiveRecord::Base.transaction do
-        puts "Creating disbursement for merchant #{merchant.reference}"
         orders = merchant.orders_to_be_disbursed(@disbursement_date)
-        amount = orders.sum(&:amount)
-        fee = merchant.total_monthly_fee_to_date(@disbursement_date)
-        d = merchant.disbursements.create!(amount: amount, fee: fee, created_at: @disbursement_date)
-        orders.each do |order|
-          order.disbursed_at = d.created_at
-          order.disbursement_id = d.id
-        end
-
+        amount_in_cents = orders.sum(&:amount_in_cents)
+        fee_in_cents = merchant.total_monthly_fee_to_date(@disbursement_date)
+        d = merchant.disbursements.create!(amount_in_cents: amount_in_cents, fee_in_cents: fee_in_cents, created_at: @disbursement_date)
         disbursements << d
       end
+      # Orders.update(disbursements)
     end
   end
 end

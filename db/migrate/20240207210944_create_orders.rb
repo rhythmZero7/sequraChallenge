@@ -3,7 +3,7 @@
 class CreateOrders < ActiveRecord::Migration[7.1]
   def change
     create_table :orders, id: :uuid do |t|
-      t.decimal :amount, null: false, precision: 8, scale: 2
+      t.integer :amount_in_cents, null: false
       t.datetime :disbursed_at
       t.belongs_to :merchant
 

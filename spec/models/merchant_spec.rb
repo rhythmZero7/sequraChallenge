@@ -48,19 +48,18 @@ RSpec.describe Merchant do
     end
 
     it 'successfully sums all fees for merchants created within range' do
-      expect(merchant.total_monthly_fee_to_date).to eq(merchant.orders.sum(&:fee))
+      expect(merchant.total_monthly_fee_to_date).to eq(merchant.orders.sum(&:fee_in_cents))
     end
 
     it 'does not sum fees for orders created out of range' do
-      order = create(:order, merchant: merchant, amount: 30_000.00, created_at: 2.months.ago)
-      # expect(merchant.total_monthly_fee_to_date).not_to eq(merchant.orders.sum(&:fee))
-      expect(merchant.total_monthly_fee_to_date).to eq(merchant.orders.sum(&:fee) - order.fee)
+      create(:order, merchant: merchant, amount_in_cents: 30_000, created_at: 2.months.ago)
+      expect(merchant.total_monthly_fee_to_date).not_to eq(merchant.orders.sum(&:fee_in_cents))
     end
 
     it 'compares to minimum_monthly_fee as expected' do
       total_monthly_fee = merchant.total_monthly_fee_to_date
-      merchant.minimum_monthly_fee = total_monthly_fee + 100
-      expect(merchant.complies_with_minimum_monthly_fee?).to be(false)
+      merchant.minimum_monthly_fee_in_cents = total_monthly_fee + 100
+      expect(merchant.complies_with_fee?).to be(false)
     end
   end
 
@@ -90,8 +89,7 @@ RSpec.describe Merchant do
 
     it 'does not return already disbursed orders' do
       merchant = create(:merchant, :daily)
-      order = create(:order, merchant: merchant, created_at: date - 6.hours,
-                             disbursed_at: date - 7.hours)
+      order = create(:order, merchant: merchant, created_at: date - 6.hours, disbursed_at: date - 7.hours)
       expect(merchant.orders_to_be_disbursed(date).include?(order)).to be(false)
     end
 

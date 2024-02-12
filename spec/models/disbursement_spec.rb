@@ -15,25 +15,25 @@ RSpec.describe Disbursement do
 
     it 'must have a numeric amount' do
       expect do
-        disbursement.amount = 'two cents'
+        disbursement.amount_in_cents = 'two cents'
       end.to change(disbursement, :valid?).from(true).to(false)
     end
 
     it 'must have an amount greater than zero' do
       expect do
-        disbursement.amount = -17.25
+        disbursement.amount_in_cents = -19
       end.to change(disbursement, :valid?).from(true).to(false)
     end
 
     it 'must have a numeric fee' do
       expect do
-        disbursement.fee = 'two cents'
+        disbursement.fee_in_cents = 'two cents'
       end.to change(disbursement, :valid?).from(true).to(false)
     end
 
     it 'must have a fee greater than zero' do
       expect do
-        disbursement.fee = -17.25
+        disbursement.fee_in_cents = -12
       end.to change(disbursement, :valid?).from(true).to(false)
     end
   end
@@ -60,16 +60,16 @@ RSpec.describe Disbursement do
 
   ####### EXTRA FEE #########
   describe '.extra fee' do
-    let(:merchant) { create(:merchant, :daily, minimum_monthly_fee: 10.00) }
+    let(:merchant) { create(:merchant, :daily, minimum_monthly_fee_in_cents: 1000) }
     let(:disbursement) { create(:disbursement, merchant: merchant) }
 
     it 'is the amount left to complete the minimum monthly fee for a merchant' do
-      expect(disbursement.extra_fee).to eq(merchant.minimum_monthly_fee)
+      expect(disbursement.extra_fee).to eq(merchant.minimum_monthly_fee_in_cents)
     end
 
     it 'is zero if the merchant complied with its minimum monthly fee' do
-      create(:order, merchant: merchant, amount: 10_000.00)
-      expect(disbursement.extra_fee).to eq(BigDecimal('0.00'))
+      create(:order, merchant: merchant, amount_in_cents: 10_000_00)
+      expect(disbursement.extra_fee).to eq(0)
     end
   end
 end

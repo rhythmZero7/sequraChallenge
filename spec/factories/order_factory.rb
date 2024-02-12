@@ -4,6 +4,6 @@
 FactoryBot.define do
   factory :order do
     merchant
-    amount { rand(1.0..25_000.00) }
+    amount_in_cents { rand(1..25_000) }
   end
 end

@@ -7,8 +7,9 @@ class Disbursement < ApplicationRecord
 
   validates :reference, uniqueness: true
 
-  validates :amount, numericality: true, comparison: { greater_than_or_equal_to: 0 }
-  validates :fee, numericality: true, comparison: { greater_than_or_equal_to: 0 }
+  validates :amount_in_cents, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  validates :fee_in_cents, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   before_create :set_reference
 
@@ -20,11 +21,19 @@ class Disbursement < ApplicationRecord
     within_last_month(date).empty?
   end
 
+  def amount
+    amount_in_cents / 100
+  end
+
+  def fee
+    fee_in_cents / 100
+  end
+
   def extra_fee(date = Time.now)
-    if merchant.complies_with_minimum_monthly_fee?(date)
-      BigDecimal('0.00')
+    if merchant.complies_with_fee?(date)
+      0
     else
-      merchant.minimum_monthly_fee - merchant.total_monthly_fee_to_date(date)
+      merchant.minimum_monthly_fee_in_cents - merchant.total_monthly_fee_to_date(date)
     end
   end
 

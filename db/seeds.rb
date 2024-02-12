@@ -11,7 +11,7 @@ csv.each do |row|
   t.email = row['email']
   t.live_on = row['live_on']
   t.disbursement_frequency = row['disbursement_frequency'].to_sym
-  t.minimum_monthly_fee = row['minimum_monthly_fee']
+  t.minimum_monthly_fee_in_cents = row['minimum_monthly_fee'] * 100
   t.save
   puts "#{t.id}, #{t.reference} saved"
 end
@@ -25,8 +25,8 @@ csv.each do |row|
   next unless merchant.present?
   t = merchant.orders.new
   t.id = row['id']
-  t.amount = row['amount']
+  t.amount_in_cents = (row['amount'].to_f * 100).round
   t.created_at = row['created_at']
   t.save
-  # puts "Order #{t.id} saved for merchant with reference: #{t.merchant.reference}"
+  puts "Order #{t.id} saved for merchant with reference: #{t.merchant.reference}"
 end

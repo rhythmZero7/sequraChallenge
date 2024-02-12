@@ -9,8 +9,12 @@ class Merchant < ApplicationRecord
 
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :minimum_monthly_fee, presence: true, numericality: true,
-                                  comparison: { greater_than_or_equal_to: 0 }
+                                  comparison: { greater_than_or_equal_to: 0, only_integer: true }
   validates :reference, presence: true, uniqueness: true
+
+  def minimum_monthly_fee
+    minimum_monthly_fee_in_cents / 100
+  end
 
   def orders_to_be_disbursed(date = Time.now)
     span = DAILY? ? 1.day : 1.week
@@ -18,15 +22,11 @@ class Merchant < ApplicationRecord
   end
 
   def total_monthly_fee_to_date(date = Time.now)
-    if orders.created_between(date - 1.month, date).empty?
-      BigDecimal('0.00')
-    else
-      orders.created_between(date - 1.month, date).sum(&:fee)
-    end
+    orders.created_between(date - 1.month, date).sum(&:fee_in_cents)
   end
 
-  def complies_with_minimum_monthly_fee?(date = Time.now)
-    total_monthly_fee_to_date(date) > minimum_monthly_fee
+  def complies_with_fee?(date = Time.now)
+    total_monthly_fee_to_date(date) > minimum_monthly_fee_in_cents
   end
 
   def disbursement_day?(date = Time.now)
